@@ -53,7 +53,10 @@ Spawn an implementation-planner teammate. Have them:
 
 ## Phase 4: Implementation
 
-Spawn implementer teammates (2-3) to work in parallel on independent tasks using git worktrees. Spawn a test-engineer teammate to write tests alongside.
+Spawn a backend-implementer and frontend-implementer to work in parallel on independent tasks.
+- Backend: API routes, database, integrations, business logic
+- Frontend: Pages, components, styling per docs/DESIGN.md
+Add more implementers if the task list demands it.
 
 ## Phase 5: Review
 
@@ -74,10 +77,21 @@ Create a PR with a clear description of the feature. Spawn a deployer teammate t
 - Deploy to staging/production
 - Spawn a monitor teammate to verify deployment succeeded
 
+## Phase 8: QA Testing
+
+Spawn a qa-tester teammate to:
+- Open the live deployment in Chrome via Chrome DevTools MCP
+- Test all user flows like a real user
+- Test desktop and mobile viewports
+- Take screenshots, check console for errors
+- Write docs/QA-REPORT.md
+- If major issues found, assign fixes back to implementers, redeploy, re-test
+
 ## Rules
 
 - ALWAYS use agent teams with tmux split panes, NEVER use the Agent tool for subagents.
 - Wait for user approval after Phase 1 and Phase 3.
+- ALL 8 phases must run. Do NOT stop early.
 - Each agent focuses on ONE job — no overlap.
 - All agents use Opus.
 - Report at phase transitions.
