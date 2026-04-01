@@ -207,16 +207,17 @@ const flow = {
     qa_test: {
       nodeType: 'acp' as const,
       session: MAIN_SESSION,
-      timeoutMs: 10 * 60_000,
-      async prompt({ outputs }: any) {
-        const url = outputs.deploy?.deploy_url || 'http://localhost:3000'
+      timeoutMs: 15 * 60_000,
+      async prompt() {
         return [
-          'You are a QA tester. Read .claude/agents/qa-tester.md.',
-          `Test the new feature at ${url} using Chrome DevTools MCP.`,
+          'You are a ruthless QA engineer. Read .claude/agents/qa-tester.md.',
+          'Deep-audit all code changes for this feature.',
+          'Trace every new CTA, API route, and state change end-to-end.',
+          'Check for regressions in existing functionality.',
           'Write docs/QA-REPORT.md.',
           '',
           ...exactJson([
-            '{ "status": "complete", "major_issues": 0 }'
+            '{ "status": "complete", "critical": 0, "major": 0 }'
           ])
         ].join('\n')
       },

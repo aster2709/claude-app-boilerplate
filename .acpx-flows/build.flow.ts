@@ -355,23 +355,30 @@ const flow = {
       parse: (text: string) => JSON.parse(text)
     },
 
-    // Phase 12: QA Testing
+    // Phase 12: QA Testing (deep code audit)
     qa_test: {
       nodeType: 'acp' as const,
       session: MAIN_SESSION,
-      timeoutMs: 10 * 60_000,
-      async prompt({ outputs }: any) {
-        const url = outputs.deploy?.url || 'http://localhost:3000'
+      timeoutMs: 15 * 60_000,
+      async prompt() {
         return [
-          'You are a QA tester. Read .claude/agents/qa-tester.md for your full mandate.',
+          'You are a ruthless QA engineer. Read .claude/agents/qa-tester.md for your full mandate.',
+          readDoc('PRD.md'),
+          readDoc('ARCHITECTURE.md'),
           '',
-          `Open the deployed app at ${url} using Chrome DevTools MCP.`,
-          'Test all user flows like a real user. Check desktop and mobile viewports.',
-          'Take screenshots. Check console for errors.',
-          'Write docs/QA-REPORT.md.',
+          'Deep-audit the entire codebase:',
+          '- Trace every button/CTA handler end-to-end',
+          '- Verify auth flows (login, logout, token refresh, unauthorized access)',
+          '- Check API route validation, error handling, response shapes',
+          '- Audit state management for race conditions and stale closures',
+          '- Verify prop passing, type safety, import/export consistency',
+          '- Test edge cases: empty states, boundary values, concurrent operations',
+          '- Check API contract alignment between frontend and backend',
+          '',
+          'Read EVERY file in src/. Think adversarially. Write docs/QA-REPORT.md.',
           '',
           ...exactJson([
-            '{ "status": "complete", "major_issues": 0, "minor_issues": 0, "report_path": "docs/QA-REPORT.md" }'
+            '{ "status": "complete", "critical": 0, "major": 0, "minor": 0, "report_path": "docs/QA-REPORT.md" }'
           ])
         ].join('\n')
       },

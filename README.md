@@ -92,7 +92,7 @@ Requirements → Research → Implementation Plan → Implementers → Review �
 | auditor | PRD coverage verification, gap analysis |
 | deployer | Platform deployment, env config, cost-aware |
 | monitor | Post-deploy health checks, CI/CD verification |
-| qa-tester | Live browser testing via Chrome DevTools MCP |
+| qa-tester | Deep code audit — traces flows end-to-end, finds what breaks |
 
 ## How Agents Communicate
 
@@ -119,12 +119,11 @@ Agents produce these artifacts in `docs/`:
 
 - Claude Code with Claude Max plan
 - [acpx](https://github.com/openclaw/acpx) (`npm install -g acpx@latest`) — deterministic graph execution
-- Chrome DevTools MCP — for QA testing
 
 ## Recommended
 
 - [cmux](https://cmux.com) or tmux — split-pane agent visibility
-- [Honcho](https://honcho.dev) plugin — persistent memory across projects and sessions
+- [Honcho](https://honcho.dev) plugin — persistent memory across projects
 - 21st.dev Magic components — UI design inspiration
 
 ## Self-Improvement

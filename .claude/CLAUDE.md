@@ -42,7 +42,7 @@ This boilerplate uses structured orchestration:
 9. **Review** → reviewer does deep code review, files issues
 10. **Audit** → auditor verifies PRD coverage, finds gaps
 11. **Deploy** → deployer pushes to platform, monitor verifies
-12. **QA Testing** → qa-tester uses Chrome DevTools MCP to test live app like a real user
+12. **QA Testing** → qa-tester deep-audits every code flow, traces CTAs, finds what breaks
 
 ## Agents (15 total)
 
@@ -62,7 +62,7 @@ This boilerplate uses structured orchestration:
 | auditor | auditor.md | PRD coverage, gap analysis |
 | deployer | deployer.md | Platform deployment, env config |
 | monitor | monitor.md | Post-deploy health checks, CI/CD verification |
-| qa-tester | qa-tester.md | Live browser testing via Chrome DevTools MCP |
+| qa-tester | qa-tester.md | Deep code audit — traces flows, finds what breaks |
 
 ## Skills
 
@@ -118,7 +118,6 @@ Uses Agent Teams with skill-based orchestration. More flexible but depends on th
 
 - acpx (`npm install -g acpx@latest`) — deterministic graph execution engine
 - Claude Code with Agent Teams enabled (in .claude/settings.json)
-- Chrome DevTools MCP — for QA testing live deployments
 - 21st.dev Magic components — for UI design inspiration via component_inspiration
 - tmux or cmux — for split-pane agent visibility (cmux preferred: cmux.com)
 - Honcho plugin — persistent memory across projects (optional but recommended)
