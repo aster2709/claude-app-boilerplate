@@ -11,8 +11,10 @@ A project is done when ALL of these have run:
 - [ ] Requirements analyst → PRD approved
 - [ ] Researcher → research doc
 - [ ] Architect → architecture approved
+- [ ] UI designer → design system + scaffolded components
 - [ ] Skeleton builder → project compiles
-- [ ] Implementers → all features built
+- [ ] Backend implementer → API routes, integrations, business logic
+- [ ] Frontend implementer → pages, components, styling per design spec
 - [ ] Test engineer → tests written and passing
 - [ ] Reviewer → code review clean
 - [ ] Auditor → security/perf audit clean

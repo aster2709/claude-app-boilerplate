@@ -37,27 +37,41 @@ Once PRD is approved, spawn a researcher teammate to investigate modern best pra
 
 Spawn an architect teammate. Give them the PRD and research document. Have them design the complete system architecture. Require plan approval. Do NOT proceed until the user approves.
 
-## Phase 4: Skeleton
+## Phase 4: Design
 
-Once architecture is approved, spawn a skeleton-builder teammate to create the repo structure, configs, and empty modules that compile and run.
+Spawn a ui-designer teammate. Give them the PRD and architecture document. They will:
+- Research design inspiration via WebSearch (Dribbble, Awwwards, design blogs)
+- Define the complete design system → docs/DESIGN.md
+- Generate key components using 21st.dev Magic MCP and v0 MCP
+- Scaffold shadcn/ui with custom theme + Magic UI animated components
+- Output: DESIGN.md + configured component libraries + pre-built component files
 
-## Phase 5: Implementation Planning (approval gate)
+The ui-designer uses external MCP tools (21st.dev, v0) to generate production-quality components — not just specs.
 
-Spawn an implementation-planner teammate to break the architecture into concrete, parallelizable tasks with dependencies. Present the plan to the user for approval.
+## Phase 5: Skeleton
 
-## Phase 6: Implementation
+Once design is complete, spawn a skeleton-builder teammate to create the repo structure, configs, and empty modules that compile and run. The skeleton should incorporate the design system setup from Phase 4.
 
-Spawn 2-3 implementer teammates to work through tasks in parallel using git worktrees. Each implementer works on independent tasks.
+## Phase 6: Implementation Planning (approval gate)
 
-## Phase 7: Testing
+Spawn an implementation-planner teammate to break the architecture into concrete, parallelizable tasks with dependencies. Split tasks into backend and frontend tracks. Present the plan to the user for approval.
+
+## Phase 7: Implementation
+
+Spawn a backend-implementer and a frontend-implementer to work in parallel.
+- Backend: API routes, database, integrations, business logic.
+- Frontend: Pages, components, styling per DESIGN.md spec. Uses pre-scaffolded shadcn/ui and Magic UI components.
+Each implementer works on independent tasks. Add more implementers if the task list demands it.
+
+## Phase 8: Testing
 
 Spawn a test-engineer teammate to write tests for all implemented code. Tests must pass before proceeding.
 
-## Phase 8: Review
+## Phase 9: Review
 
 Spawn a reviewer teammate for a deep code review. If critical issues are found, assign them back to implementers and wait for fixes.
 
-## Phase 9: Audit
+## Phase 10: Audit
 
 Spawn an auditor teammate to verify:
 - All PRD requirements are implemented
@@ -67,7 +81,7 @@ Spawn an auditor teammate to verify:
 
 If the auditor finds gaps, loop back to implementation before proceeding.
 
-## Phase 10: Deploy
+## Phase 11: Deploy
 
 Spawn a deployer teammate to:
 - Check deployment config (ask user if none exists)
@@ -81,6 +95,7 @@ All agent outputs MUST be saved to a docs/ folder:
 - docs/PRD.md
 - docs/RESEARCH.md
 - docs/ARCHITECTURE.md
+- docs/DESIGN.md
 - docs/IMPLEMENTATION_PLAN.md
 
 These documents are the project's source of truth for future /feature work.
@@ -88,8 +103,8 @@ These documents are the project's source of truth for future /feature work.
 ## Rules
 
 - ALWAYS use agent teams with tmux split panes, NEVER use the Agent tool for subagents.
-- Wait for user approval at phases 1, 3, and 5 ONLY. All other phases run autonomously.
-- ALL 10 phases must run. Do NOT stop early.
+- Wait for user approval at phases 1, 3, and 6 ONLY. All other phases run autonomously.
+- ALL 11 phases must run. Do NOT stop early.
 - All agents use Opus.
 - Update the user at phase transitions, not on every action.
 - If any agent gets stuck, report to the user immediately.
