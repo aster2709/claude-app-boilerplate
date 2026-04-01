@@ -22,8 +22,10 @@ Every build follows this pipeline:
 4. **Skeleton** → Repo structure, configs, empty modules that compile/run
 5. **Implementation Planning** → Detailed tasks with dependencies
 6. **Implementation** → Parallel agents building features in isolated worktrees
-7. **Testing** → Tests written alongside implementation
-8. **Review** → Deep code review, security audit, performance check
+7. **Testing** → Tests written and passing
+8. **Review** → Deep code review
+9. **Audit** → Requirements coverage, security, performance
+10. **Deploy** → Deployed and verified
 
 ## Conventions
 
