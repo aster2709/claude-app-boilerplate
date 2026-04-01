@@ -46,6 +46,16 @@ Spawn 2-3 implementer teammates to work through tasks in parallel using git work
 
 Once implementation is complete, spawn a reviewer teammate for a deep code review. Have them file issues as tasks. If critical issues are found, assign them back to implementers.
 
+## Documentation
+
+All agent outputs (PRD, research, architecture, implementation plan) MUST be saved to a docs/ folder:
+- docs/PRD.md
+- docs/RESEARCH.md
+- docs/ARCHITECTURE.md
+- docs/IMPLEMENTATION_PLAN.md
+
+These documents are the project's source of truth for future /feature work.
+
 ## Rules
 
 - ALWAYS use agent teams with tmux split panes, NEVER use the Agent tool for subagents.

@@ -18,9 +18,16 @@ Teammates communicate through the shared task list and direct messaging.
 When spawning teammates, reference the agent definitions in .claude/agents/ by name.
 All teammates use Opus.
 
+## Context: Existing Documentation
+
+Before starting any phase, teammates MUST read the docs/ folder if it exists.
+This contains the original PRD, research, and architecture documents from the initial build.
+All feature work should be consistent with these foundational documents.
+
 ## Phase 1: Requirements Discovery
 
 Create an agent team. Spawn a requirements-analyst teammate. Have them:
+- Read docs/PRD.md, docs/ARCHITECTURE.md, and docs/RESEARCH.md for existing context
 - Read the existing codebase to understand current state
 - Ask the user detailed clarifying questions about the feature
 - Produce a Feature Spec (not a full PRD — scoped to this feature)
