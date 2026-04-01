@@ -2,6 +2,17 @@
 
 This project uses multi-agent orchestration to build applications from requirements.
 
+## CRITICAL: Agent Teams Only
+
+When running /build or /feature, ALWAYS use Claude Code Agent Teams (experimental).
+NEVER use the Agent tool to spawn subagents for orchestrated workflows.
+
+Agent Teams = separate Claude Code instances as teammates, each with their own context window.
+Subagents = lightweight helpers within the same session. DO NOT use these for the pipeline.
+
+Create agent teams with tmux split panes so all teammates are visible side by side.
+Set teammateMode to "tmux" for split-pane display.
+
 ## Process
 
 Every build follows this pipeline:

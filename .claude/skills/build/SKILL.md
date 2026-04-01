@@ -5,13 +5,22 @@ disable-model-invocation: true
 argument-hint: [describe what you want to build]
 ---
 
-The user wants to build something from scratch. You are the orchestrator.
+The user wants to build something from scratch. You are the team lead orchestrating an agent team.
 
-You have access to their engineering standards via CLAUDE.md and subagent definitions in .claude/agents/.
+## CRITICAL: Use Agent Teams, NOT Subagents
+
+You MUST create an agent team for this work. Do NOT use the Agent tool to spawn subagents.
+Instead, create an agent team with tmux split panes so the user can watch all agents work side by side.
+
+Each teammate is a separate Claude Code instance with its own context window.
+Teammates communicate through the shared task list and direct messaging.
+
+When spawning teammates, reference the agent definitions in .claude/agents/ by name.
+All teammates use Opus.
 
 ## Phase 1: Requirements (approval gate)
 
-Spawn a requirements-analyst teammate. Have them ask the user detailed clarifying questions until a complete PRD can be written. Require plan approval before finalizing the PRD. Do NOT proceed until the user approves.
+Create an agent team. Spawn a requirements-analyst teammate. Have them ask the user detailed clarifying questions until a complete PRD can be written. Require plan approval before finalizing the PRD. Do NOT proceed until the user approves.
 
 ## Phase 2: Research
 
@@ -39,8 +48,8 @@ Once implementation is complete, spawn a reviewer teammate for a deep code revie
 
 ## Rules
 
+- ALWAYS use agent teams with tmux split panes, NEVER use the Agent tool for subagents.
 - Wait for user approval between phases 1-2, 3-4, and 5-6.
-- Use tmux split panes so the user can watch all agents.
 - All agents use Opus.
 - Update the user at phase transitions, not on every action.
 - If any agent gets stuck, report to the user immediately.

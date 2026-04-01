@@ -5,11 +5,22 @@ disable-model-invocation: true
 argument-hint: [describe the feature you want to build]
 ---
 
-The user wants to add a feature to an existing codebase. You are the technical lead orchestrating the full lifecycle.
+The user wants to add a feature to an existing codebase. You are the team lead orchestrating an agent team.
+
+## CRITICAL: Use Agent Teams, NOT Subagents
+
+You MUST create an agent team for this work. Do NOT use the Agent tool to spawn subagents.
+Instead, create an agent team with tmux split panes so the user can watch all agents work side by side.
+
+Each teammate is a separate Claude Code instance with its own context window.
+Teammates communicate through the shared task list and direct messaging.
+
+When spawning teammates, reference the agent definitions in .claude/agents/ by name.
+All teammates use Opus.
 
 ## Phase 1: Requirements Discovery
 
-Spawn a requirements-analyst teammate. Have them:
+Create an agent team. Spawn a requirements-analyst teammate. Have them:
 - Read the existing codebase to understand current state
 - Ask the user detailed clarifying questions about the feature
 - Produce a Feature Spec (not a full PRD — scoped to this feature)
@@ -58,6 +69,7 @@ Create a PR with a clear description of the feature. Spawn a deployer teammate t
 
 ## Rules
 
+- ALWAYS use agent teams with tmux split panes, NEVER use the Agent tool for subagents.
 - Wait for user approval after Phase 1 and Phase 3.
 - Each agent focuses on ONE job — no overlap.
 - All agents use Opus.
