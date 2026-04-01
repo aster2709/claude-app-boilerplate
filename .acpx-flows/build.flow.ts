@@ -378,6 +378,32 @@ const flow = {
       parse: (text: string) => JSON.parse(text)
     },
 
+    // Phase 13: Capture learnings
+    capture_learnings: {
+      nodeType: 'acp' as const,
+      session: MAIN_SESSION,
+      async prompt({ outputs }: any) {
+        return [
+          'The build is complete. Reflect on the entire process:',
+          '',
+          '1. What patterns worked well that should be reused?',
+          '2. What caused retries or required fixes?',
+          '3. What stack/architecture decisions were made and why?',
+          '',
+          'Write a reusable skill file to .claude/skills/learnings/ with a descriptive name.',
+          'Format: SKILL.md with frontmatter (name, description) and the pattern documented.',
+          'This will help future builds avoid rediscovering the same solutions.',
+          '',
+          'Example filename: next-supabase-auth.md if the build used Next.js + Supabase auth.',
+          '',
+          ...exactJson([
+            '{ "status": "complete", "learning_file": "...", "key_patterns": [] }'
+          ])
+        ].join('\n')
+      },
+      parse: (text: string) => JSON.parse(text)
+    },
+
     // Done
     complete: {
       nodeType: 'compute' as const,
@@ -385,7 +411,8 @@ const flow = {
         status: 'BUILD COMPLETE',
         url: outputs.deploy?.url,
         qa_issues: outputs.qa_test?.major_issues,
-        phases_completed: 12
+        learnings: outputs.capture_learnings?.learning_file,
+        phases_completed: 13
       })
     }
   },
@@ -446,7 +473,8 @@ const flow = {
     // Phase 10 → 11 → 12
     { from: 'audit', to: 'deploy' },
     { from: 'deploy', to: 'qa_test' },
-    { from: 'qa_test', to: 'complete' }
+    { from: 'qa_test', to: 'capture_learnings' },
+    { from: 'capture_learnings', to: 'complete' }
   ]
 }
 
