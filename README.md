@@ -23,7 +23,7 @@ You describe what you want to build. Shipwright orchestrates 15 specialized AI a
 - [acpx](https://github.com/openclaw/acpx) - deterministic graph execution engine
 
 ```bash
-npm install -g acpx@latest
+npm ci -g acpx@latest
 ```
 
 ## Quick Start
@@ -31,7 +31,7 @@ npm install -g acpx@latest
 ```bash
 gh repo create my-app --template aster2709/shipwright --clone --private
 cd my-app
-npm install
+npm ci
 npx shipwright
 ```
 
