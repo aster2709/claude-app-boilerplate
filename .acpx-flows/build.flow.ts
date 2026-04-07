@@ -30,7 +30,7 @@ const flow = {
     title: ({ input }: any) => `Build: ${(input.requirement || '').slice(0, 60)}`
   },
   permissions: {
-    requiredMode: 'dangerously-skip-permissions',
+    requiredMode: 'approve-all',
     requireExplicitGrant: false,
     reason: 'Build pipeline needs full file and shell access'
   },
@@ -453,12 +453,9 @@ const flow = {
     // Phase 6 → approval
     { from: 'impl_plan', to: 'approve_plan' },
 
-    // Phase 7: parallel implementation
+    // Phase 7: implementation (backend then frontend)
     { from: 'approve_plan', to: 'implement_backend' },
-    { from: 'approve_plan', to: 'implement_frontend' },
-
-    // Phase 7 → 8 (join)
-    { from: 'implement_backend', to: 'testing' },
+    { from: 'implement_backend', to: 'implement_frontend' },
     { from: 'implement_frontend', to: 'testing' },
 
     // Phase 8 → 9

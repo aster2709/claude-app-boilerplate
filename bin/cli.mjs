@@ -98,7 +98,7 @@ async function main() {
 
   const child = spawn(
     'acpx',
-    ['flow', 'run', flowFile, '--input-json', input],
+    ['--approve-all', 'flow', 'run', flowFile, '--input-json', input],
     { stdio: 'inherit', cwd: ROOT }
   )
 

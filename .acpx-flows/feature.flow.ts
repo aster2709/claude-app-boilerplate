@@ -28,7 +28,7 @@ const flow = {
     title: ({ input }: any) => `Feature: ${(input.feature || '').slice(0, 60)}`
   },
   permissions: {
-    requiredMode: 'dangerously-skip-permissions',
+    requiredMode: 'approve-all',
     requireExplicitGrant: false,
     reason: 'Feature pipeline needs full file and shell access'
   },
