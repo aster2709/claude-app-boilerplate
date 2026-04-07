@@ -41,6 +41,32 @@ function qaHistory(outputs: any, upTo: number): string {
   return lines.length > 0 ? `\nPrevious Q&A:\n${lines.join('\n\n')}` : ''
 }
 
+async function reviewDoc(docName: string, title: string, nextHint: string) {
+  const { marked } = await import('marked')
+  const { markedTerminal } = await import('marked-terminal')
+  const clack = await import('@clack/prompts')
+
+  const docPath = resolve(process.cwd(), `docs/${docName}`)
+  const content = readFileSync(docPath, 'utf-8')
+
+  marked.use(markedTerminal())
+  const rendered = marked.parse(content) as string
+
+  clack.log.step(title)
+  process.stderr.write('\n' + rendered + '\n')
+
+  const decision = await clack.select({
+    message: `Do you approve this ${title.toLowerCase()}?`,
+    options: [
+      { value: 'approve', label: 'Approve', hint: nextHint },
+      { value: 'suggest', label: 'Suggest changes', hint: 'describe what to change' },
+    ],
+  })
+
+  if (clack.isCancel(decision)) throw new Error('User cancelled')
+  return { approved: decision === 'approve', decision }
+}
+
 const REQ_MANDATE = [
   'You are a senior product manager. Read .claude/agents/requirements-analyst.md for your full mandate.',
   '',
@@ -140,31 +166,7 @@ const flow = {
     // Phase 1 gate: render PRD + interactive review
     review_prd: {
       nodeType: 'compute' as const,
-      async run() {
-        const { marked } = await import('marked')
-        const { markedTerminal } = await import('marked-terminal')
-        const clack = await import('@clack/prompts')
-
-        const prdPath = resolve(process.cwd(), 'docs/PRD.md')
-        const prd = readFileSync(prdPath, 'utf-8')
-
-        marked.use(markedTerminal())
-        const rendered = marked.parse(prd) as string
-
-        clack.log.step('Product Requirements Document')
-        process.stderr.write('\n' + rendered + '\n')
-
-        const decision = await clack.select({
-          message: 'Do you approve this PRD?',
-          options: [
-            { value: 'approve', label: 'Approve', hint: 'continue to research + architecture' },
-            { value: 'suggest', label: 'Suggest changes', hint: 'describe what to change' },
-          ],
-        })
-
-        if (clack.isCancel(decision)) throw new Error('User cancelled')
-        return { approved: decision === 'approve', decision }
-      }
+      async run() { return reviewDoc('PRD.md', 'Product Requirements Document', 'continue to research + architecture') }
     },
 
     collect_suggestion: {
@@ -238,9 +240,32 @@ const flow = {
       parse: (text: string) => JSON.parse(text)
     },
 
-    approve_architecture: {
-      nodeType: 'checkpoint' as const,
-      statusDetail: 'Waiting for architecture approval. Review docs/ARCHITECTURE.md and approve to continue.'
+    review_architecture: {
+      nodeType: 'compute' as const,
+      async run() { return reviewDoc('ARCHITECTURE.md', 'Architecture', 'continue to design + implementation') }
+    },
+
+    collect_arch_suggestion: {
+      nodeType: 'prompt' as const,
+      message: 'What changes do you want in the architecture?',
+    },
+
+    revise_architecture: {
+      nodeType: 'acp' as const,
+      session: MAIN_SESSION,
+      async prompt({ outputs }: any) {
+        return [
+          'You are a principal software architect. Read .claude/agents/architect.md for your full mandate.',
+          '',
+          'The user reviewed docs/ARCHITECTURE.md and requested changes:',
+          `"${outputs.collect_arch_suggestion}"`,
+          '',
+          'Read the current docs/ARCHITECTURE.md, incorporate the changes, and rewrite it.',
+          '',
+          ...exactJson(['{ "status": "revised", "architecture_path": "docs/ARCHITECTURE.md" }'])
+        ].join('\n')
+      },
+      parse: (text: string) => JSON.parse(text)
     },
 
     // ── Phase 4: Design ──
@@ -328,9 +353,37 @@ const flow = {
       parse: (text: string) => JSON.parse(text)
     },
 
-    approve_plan: {
-      nodeType: 'checkpoint' as const,
-      statusDetail: 'Waiting for implementation plan approval. Review docs/IMPLEMENTATION_PLAN.md and approve.'
+    review_plan: {
+      nodeType: 'compute' as const,
+      async run() { return reviewDoc('IMPLEMENTATION_PLAN.md', 'Implementation Plan', 'start building') }
+    },
+
+    collect_plan_suggestion: {
+      nodeType: 'prompt' as const,
+      message: 'What changes do you want in the implementation plan?',
+    },
+
+    revise_plan: {
+      nodeType: 'acp' as const,
+      session: MAIN_SESSION,
+      async prompt({ outputs }: any) {
+        return [
+          'You are a senior engineering lead. Read .claude/agents/implementation-planner.md for your full mandate.',
+          '',
+          'The user reviewed docs/IMPLEMENTATION_PLAN.md and requested changes:',
+          `"${outputs.collect_plan_suggestion}"`,
+          '',
+          'Read the current plan, incorporate the changes, and rewrite it.',
+          '',
+          ...exactJson(['{ "status": "revised", "plan_path": "docs/IMPLEMENTATION_PLAN.md" }'])
+        ].join('\n')
+      },
+      parse: (text: string) => JSON.parse(text)
+    },
+
+    start_impl: {
+      nodeType: 'compute' as const,
+      run: () => ({ status: 'starting implementation' })
     },
 
     // ── Phase 7: Parallel implementation (fork/join) ──
@@ -558,8 +611,13 @@ const flow = {
 
     // Phase 2 → 3 → approval
     { from: 'research', to: 'architecture' },
-    { from: 'architecture', to: 'approve_architecture' },
-    { from: 'approve_architecture', to: 'design' },
+    { from: 'architecture', to: 'review_architecture' },
+    {
+      from: 'review_architecture',
+      switch: { on: '$.approved', cases: { true: 'design', false: 'collect_arch_suggestion' } }
+    },
+    { from: 'collect_arch_suggestion', to: 'revise_architecture' },
+    { from: 'revise_architecture', to: 'review_architecture' },
 
     // Phase 4 → 5
     { from: 'design', to: 'skeleton' },
@@ -578,10 +636,16 @@ const flow = {
     { from: 'skeleton_retry', to: 'impl_plan' },
 
     // Phase 6 → approval
-    { from: 'impl_plan', to: 'approve_plan' },
+    { from: 'impl_plan', to: 'review_plan' },
+    {
+      from: 'review_plan',
+      switch: { on: '$.approved', cases: { true: 'start_impl', false: 'collect_plan_suggestion' } }
+    },
+    { from: 'collect_plan_suggestion', to: 'revise_plan' },
+    { from: 'revise_plan', to: 'review_plan' },
 
     // Phase 7: parallel implementation (fork/join)
-    { from: 'approve_plan', fork: ['implement_backend', 'implement_frontend'], join: 'testing' },
+    { from: 'start_impl', fork: ['implement_backend', 'implement_frontend'], join: 'testing' },
 
     // Phase 8 → 9
     { from: 'testing', to: 'review' },
