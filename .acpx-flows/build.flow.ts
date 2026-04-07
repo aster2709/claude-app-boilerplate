@@ -57,15 +57,21 @@ const flow = {
       session: MAIN_SESSION,
       async prompt({ input }: any) {
         return [
-          'You are a senior product manager gathering requirements.',
+          'You are a senior product manager. Read .claude/agents/requirements-analyst.md for your full mandate.',
+          '',
           `The user wants to build: ${input.requirement}`,
           '',
-          'Ask the SINGLE most important clarifying question to understand what to build.',
-          'Consider: target users, auth model, core features, data model.',
-          'Ask only ONE question. Be specific, not generic.',
+          'Your job is to gather enough information to write a complete PRD.',
+          'You need to cover: target users/personas, core user flows, authentication model,',
+          'data model (entities + relationships), third-party integrations, performance/scale,',
+          'infrastructure budget, deployment preferences, and mobile/responsive needs.',
+          '',
+          'This is round 1 of 3. Ask your 2-3 most important clarifying questions.',
+          'Focus on the biggest unknowns first. Be specific to what the user is building.',
+          'Format each question on its own line.',
           '',
           ...exactJson([
-            '{ "question": "..." }'
+            '{ "questions": "your 2-3 questions here, each on a new line" }'
           ])
         ].join('\n')
       },
@@ -74,7 +80,7 @@ const flow = {
 
     answer_1: {
       nodeType: 'prompt' as const,
-      message: async ({ outputs }: any) => outputs.ask_q1?.question || 'Describe your requirements:',
+      message: async ({ outputs }: any) => outputs.ask_q1?.questions || 'Describe your requirements:',
     },
 
     ask_q2: {
@@ -82,16 +88,18 @@ const flow = {
       session: MAIN_SESSION,
       async prompt({ input, outputs }: any) {
         return [
-          'You are a senior product manager gathering requirements.',
-          `The user wants to build: ${input.requirement}`,
-          `\nPrevious Q&A:\nQ: ${outputs.ask_q1?.question}\nA: ${outputs.answer_1}`,
+          'You are a senior product manager. Read .claude/agents/requirements-analyst.md for your full mandate.',
           '',
-          'Based on what you know so far, ask the NEXT most important clarifying question.',
-          'Consider: deployment target, tech preferences, integrations, budget, mobile support.',
-          'Ask only ONE question that fills the biggest remaining gap.',
+          `The user wants to build: ${input.requirement}`,
+          `\nRound 1 Q&A:\nQ: ${outputs.ask_q1?.questions}\nA: ${outputs.answer_1}`,
+          '',
+          'This is round 2 of 3. Based on what you now know, ask 2-3 MORE clarifying questions.',
+          'Cover areas not yet addressed from: data model, integrations, auth flows,',
+          'deployment target, budget constraints, error handling, mobile support.',
+          'Skip anything already answered. Be specific.',
           '',
           ...exactJson([
-            '{ "question": "..." }'
+            '{ "questions": "your 2-3 questions here, each on a new line" }'
           ])
         ].join('\n')
       },
@@ -100,7 +108,7 @@ const flow = {
 
     answer_2: {
       nodeType: 'prompt' as const,
-      message: async ({ outputs }: any) => outputs.ask_q2?.question || 'Any other details?',
+      message: async ({ outputs }: any) => outputs.ask_q2?.questions || 'Any other details?',
     },
 
     ask_q3: {
@@ -108,17 +116,18 @@ const flow = {
       session: MAIN_SESSION,
       async prompt({ input, outputs }: any) {
         return [
-          'You are a senior product manager gathering requirements.',
-          `The user wants to build: ${input.requirement}`,
-          `\nPrevious Q&A:`,
-          `Q: ${outputs.ask_q1?.question}\nA: ${outputs.answer_1}`,
-          `Q: ${outputs.ask_q2?.question}\nA: ${outputs.answer_2}`,
+          'You are a senior product manager. Read .claude/agents/requirements-analyst.md for your full mandate.',
           '',
-          'Ask ONE final clarifying question about anything still unclear.',
-          'Consider: edge cases, auth flows, error handling, scope boundaries.',
+          `The user wants to build: ${input.requirement}`,
+          `\nRound 1 Q&A:\nQ: ${outputs.ask_q1?.questions}\nA: ${outputs.answer_1}`,
+          `\nRound 2 Q&A:\nQ: ${outputs.ask_q2?.questions}\nA: ${outputs.answer_2}`,
+          '',
+          'This is round 3 of 3 (final round). Ask any remaining questions about:',
+          'edge cases, scope boundaries, non-goals, constraints, or anything still ambiguous.',
+          'If everything is clear, ask about priorities and what the MVP should include vs defer.',
           '',
           ...exactJson([
-            '{ "question": "..." }'
+            '{ "questions": "your final 2-3 questions, each on a new line" }'
           ])
         ].join('\n')
       },
@@ -127,7 +136,7 @@ const flow = {
 
     answer_3: {
       nodeType: 'prompt' as const,
-      message: async ({ outputs }: any) => outputs.ask_q3?.question || 'Anything else?',
+      message: async ({ outputs }: any) => outputs.ask_q3?.questions || 'Anything else?',
     },
 
     // Write PRD from all gathered context
@@ -140,10 +149,10 @@ const flow = {
           '',
           `The user wants to build: ${input.requirement}`,
           '',
-          'Clarifying Q&A:',
-          `Q: ${outputs.ask_q1?.question}\nA: ${outputs.answer_1}`,
-          `Q: ${outputs.ask_q2?.question}\nA: ${outputs.answer_2}`,
-          `Q: ${outputs.ask_q3?.question}\nA: ${outputs.answer_3}`,
+          'Clarifying Q&A (3 rounds):',
+          `\nRound 1:\nQ: ${outputs.ask_q1?.questions}\nA: ${outputs.answer_1}`,
+          `\nRound 2:\nQ: ${outputs.ask_q2?.questions}\nA: ${outputs.answer_2}`,
+          `\nRound 3:\nQ: ${outputs.ask_q3?.questions}\nA: ${outputs.answer_3}`,
           '',
           'Write a complete PRD to docs/PRD.md using all the context above.',
           'Include: overview, personas, user stories, data model, API surface, constraints.',
