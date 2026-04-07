@@ -103,7 +103,7 @@ After a successful build, the team lead should:
 
 ### Interactive CLI (recommended)
 ```bash
-npx shipwright
+npm start
 ```
 Walks through mode selection and requirement input, then launches the acpx graph engine. Guarantees all phases run. Retries on build failures. Loops back on review issues. Checkpoint pauses at approval gates.
 

@@ -32,7 +32,7 @@ npm ci -g acpx@latest
 gh repo create my-app --template aster2709/shipwright --clone --private
 cd my-app
 npm ci
-npx shipwright
+npm start
 ```
 
 That's it. The CLI walks you through everything: pick build or feature, describe what you want, and the pipeline runs.
@@ -81,7 +81,7 @@ LLMs used as orchestrators idle between phases, skip steps, and forget to check 
 
 | Mode | Engine | Completion | Best for |
 |---|---|---|---|
-| `npx shipwright` | Interactive CLI + acpx graph engine | Guaranteed | Recommended for all users |
+| `npm start` | Interactive CLI + acpx graph engine | Guaranteed | Recommended for all users |
 | `/build` skill | LLM orchestrator (Agent Teams) | Best-effort | Exploratory work, flexibility |
 | `/feature` skill | LLM orchestrator (Agent Teams) | Best-effort | Quick feature additions |
 
