@@ -1,0 +1,32 @@
+{
+  "name": "shipwright",
+  "version": "0.1.0",
+  "description": "Multi-agent orchestration for building production apps with Claude Code",
+  "type": "module",
+  "bin": {
+    "shipwright": "./bin/cli.mjs"
+  },
+  "scripts": {
+    "start": "node bin/cli.mjs"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.10.0"
+  },
+  "keywords": [
+    "claude-code",
+    "ai-agents",
+    "multi-agent",
+    "orchestration",
+    "acpx"
+  ],
+  "author": "Yash Mehta",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aster2709/shipwright.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aster2709/shipwright/issues"
+  },
+  "homepage": "https://github.com/aster2709/shipwright#readme"
+}

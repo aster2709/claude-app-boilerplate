@@ -101,12 +101,11 @@ After a successful build, the team lead should:
 
 ## Execution Modes
 
-### acpx Flow (recommended — deterministic)
+### Interactive CLI (recommended)
 ```bash
-# Edit .acpx-flows/build-input.json with your requirement, then:
-acpx flow run .acpx-flows/build.flow.ts --input-file .acpx-flows/build-input.json
+npx shipwright
 ```
-The graph engine guarantees all 12 phases run. Retries on build failures. Loops back on review issues. Checkpoint pauses at approval gates. No skipping, no early stops.
+Walks through mode selection and requirement input, then launches the acpx graph engine. Guarantees all phases run. Retries on build failures. Loops back on review issues. Checkpoint pauses at approval gates.
 
 ### Claude Code Skill (fallback — flexible but non-deterministic)
 ```
@@ -120,4 +119,4 @@ Uses Agent Teams with skill-based orchestration. More flexible but depends on th
 - Claude Code with Agent Teams enabled (in .claude/settings.json)
 - 21st.dev Magic components — for UI design inspiration via component_inspiration
 - tmux or cmux — for split-pane agent visibility (cmux preferred: cmux.com)
-- Honcho plugin — persistent memory across projects (optional but recommended)
+

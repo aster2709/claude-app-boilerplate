@@ -31,21 +31,13 @@ npm install -g acpx@latest
 ```bash
 gh repo create my-app --template aster2709/shipwright --clone --private
 cd my-app
+npm install
+npx shipwright
 ```
 
-### Option A: acpx (recommended — deterministic)
+That's it. The CLI walks you through everything: pick build or feature, describe what you want, and the pipeline runs.
 
-The graph engine drives every phase. No skipping, no idle agents, automatic retries.
-
-```bash
-# Edit your requirement
-nano .acpx-flows/build-input.json
-
-# Run the pipeline
-acpx flow run .acpx-flows/build.flow.ts --input-file .acpx-flows/build-input.json
-```
-
-### Option B: Claude Code Skills (flexible, human-in-the-loop)
+### Alternative: Claude Code Skills (flexible, human-in-the-loop)
 
 ```bash
 claude --dangerously-skip-permissions
@@ -89,9 +81,9 @@ LLMs used as orchestrators idle between phases, skip steps, and forget to check 
 
 | Mode | Engine | Completion | Best for |
 |---|---|---|---|
-| acpx flow | Graph engine (deterministic) | Guaranteed — all nodes must complete | Production builds, reliability |
-| /build skill | LLM orchestrator (Agent Teams) | Best-effort — LLM may idle or skip | Exploratory work, flexibility |
-| /feature skill | LLM orchestrator (Agent Teams) | Best-effort | Quick feature additions |
+| `npx shipwright` | Interactive CLI + acpx graph engine | Guaranteed | Recommended for all users |
+| `/build` skill | LLM orchestrator (Agent Teams) | Best-effort | Exploratory work, flexibility |
+| `/feature` skill | LLM orchestrator (Agent Teams) | Best-effort | Quick feature additions |
 
 ## Skills
 
@@ -130,7 +122,7 @@ cmux / tmux                          (observe agents in split panes)
        └── Claude Code               (agent runtime — executes each node)
             ├── 15 agent definitions  (each owns one phase)
             ├── docs/                 (inter-agent communication via artifacts)
-            └── Honcho               (persistent memory across projects)
+            └── .claude/skills/learnings/  (reusable patterns from past builds)
 ```
 
 ## Self-Improvement
@@ -140,7 +132,6 @@ After successful builds, reusable patterns are saved to `.claude/skills/learning
 ### Recommended
 
 - [cmux](https://cmux.com) or tmux - split-pane agent visibility
-- [Honcho](https://honcho.dev) plugin - persistent memory across projects
 - 21st.dev Magic components - UI design inspiration
 
 ## License
