@@ -19,7 +19,7 @@ You describe what you want to build. Shipwright orchestrates 15 specialized AI a
 
 ## Prerequisites
 
-- [Claude Code](https://claude.ai/claude-code) with Claude Max plan
+- [Claude Code](https://claude.ai/claude-code) (Max plan recommended for higher rate limits)
 - [acpx](https://github.com/openclaw/acpx) - deterministic graph execution engine
 
 ```bash
