@@ -22,7 +22,6 @@ function checkDep(cmd, name, install) {
 async function main() {
   p.intro('Shipwright')
 
-  // preflight
   const hasAcpx = checkDep('acpx', 'acpx', 'npm install -g acpx@latest')
   const hasClaude = checkDep('claude', 'Claude Code', 'https://claude.ai/claude-code')
 
@@ -81,8 +80,7 @@ async function main() {
 
   const input = JSON.stringify({ requirement: requirement.trim() })
 
-  p.log.step(`Starting ${mode === 'build' ? '12' : '8'}-phase pipeline...`)
-  p.log.info('You\'ll be asked to approve at key checkpoints.')
+  p.log.step('Launching pipeline...')
   p.note(
     [
       `Mode:        ${mode}`,
@@ -93,16 +91,11 @@ async function main() {
     'Pipeline config'
   )
 
-  const s = p.spinner()
-  s.start('Launching acpx...')
-
   const child = spawn(
     'acpx',
     ['--approve-all', 'flow', 'run', flowFile, '--input-json', input],
     { stdio: 'inherit', cwd: ROOT }
   )
-
-  s.stop('acpx running.')
 
   child.on('close', (code) => {
     if (code === 0) {
